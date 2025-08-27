@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeTable X & XI</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #fcf9f8 0%, #e0c3fc 50%, #8ec5fc 100%);
+        }
+        .tab-btn {
+            display: inline-block;
+            margin: 20px 20px 0 20px;
+            padding: 10px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(90deg, #2d6cdf 0%, #6dd5ed 100%);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(45,108,223,0.10);
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+        .tab-btn.active {
+            background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%);
+            color: #222;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        h1 {
+            color: #2d6cdf;
+            letter-spacing: 2px;
+            margin-top: 18px;
+            margin-bottom: 18px;
+            text-shadow: 0 2px 8px rgba(45,108,223,0.07);
+        }
+        .editToggle, .legendEditToggle {
+            background: linear-gradient(90deg, #6dd5ed 0%, #2193b0 100%);
+            color: #fff;
+            border: none;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(33,147,176,0.10);
+            cursor: pointer;
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+        .editToggle:hover, .legendEditToggle:hover {
+            background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%);
+            color: #222;
+            box-shadow: 0 4px 16px rgba(255,179,71,0.15);
+        }
+        .colorLegend {
+            background: rgba(255,255,255,0.85);
+            box-shadow: 0 2px 12px 0 rgba(45,108,223,0.07);
+            margin-bottom: 40px;
+        }
+        a {
+            text-decoration: none;
+        }
+        .legend-del-btn {
+            margin-left: 8px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align:center;">
+        <button class="tab-btn active" onclick="showTab('x')">X-E Timetable</button>
+        <button class="tab-btn" onclick="showTab('xi')">XI-B Timetable</button>
+    </div>
+
+    <!-- X-E Timetable Tab -->
+    <div id="tab_x" class="tab-content active">
+        <h1 align="center">X-E</h1>
+        <div style="text-align: center; margin-bottom: 10px;">
+            <button id="editToggle_x" class="editToggle" onclick="toggleEdit('x')" style="padding: 5px 10px; font-size: 16px;">Edit Mode (Disable)</button>
+        </div>
+        <table id="table_x" align="center" border="5" cellspacing="0">
+            <tr>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>0<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>1<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>2<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>3<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>4<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>BREAK<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>5<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>6<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>7<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>8<br>0:00-0:00</b></td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)"><b>Monday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)">ART/<br>CRAFT</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td rowspan="6" align="center" height="50" class="editable" style="background-color:rgb(255, 255, 228)"></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)">PRACTICAL<br>_PHY/CHE<br>M/BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 255, 255)">IT/AI/IFM</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)"><b>Tuesday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)">LIBRARY</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(160, 81, 255)">ECO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)"><b>Wednesday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 255, 255)">IT/AI/IFM</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)"><b>Thursday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(160, 81, 255)">ECO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)">MUSIC/<br>DANCE</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)"><b>Friday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">C.T.</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 255, 255)">IT/AI/IFM</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)">SPORTS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 255, 255)"><b>Saturday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">C.T.</td>
+                <td colspan="2" align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)"><b>PAT</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+            </tr>
+        </table>
+        <p id="lastEditedDisplay_x" style="text-align: center;"></p>
+        <div id="colorLegend_x" class="colorLegend" style="text-align: center; margin-top: 20px; padding: 10px; border: 2px solid black; width: 50%; margin-left: auto; margin-right: auto;">
+            <h3>Subject Color Legend</h3>
+            <button id="legendEditToggle_x" class="legendEditToggle" onclick="toggleLegendEdit('x')" style="margin-bottom: 10px; padding: 5px 10px; font-size: 14px;">Edit Legend (Disable)</button>
+            <button id="addLegendBtn_x" onclick="addLegendItem('x')" style="margin-bottom: 10px; margin-left: 10px; padding: 5px 10px; font-size: 14px;">Add Subject</button>
+            <div id="legendItems_x" style="display: flex; justify-content: space-around; flex-wrap: wrap;"></div>
+        </div>
+    </div>
+
+    <!-- XI-B Timetable Tab -->
+    <div id="tab_xi" class="tab-content">
+        <h1 align="center">XI-B</h1>
+        <div style="text-align: center; margin-bottom: 10px;">
+            <button id="editToggle_xi" class="editToggle" onclick="toggleEdit('xi')" style="padding: 5px 10px; font-size: 16px;">Edit Mode (Disable)</button>
+        </div>
+        <table id="table_xi" align="center" border="5" cellspacing="0">
+            <tr>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>0<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>1<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>2<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>3<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>4<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>BREAK<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>5<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>6<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>7<br>0:00-0:00</b></td>
+                <td align="center" height="50" width="100" class="editable" style="background-color:rgb(255, 255, 228)"><b>8<br>0:00-0:00</b></td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)"><b>Monday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">SUBJECT 1</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)">SUBJECT 2</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">SUBJECT 3</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">SUBJECT 4</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">SUBJECT 5</td>
+                <td rowspan="6" align="center" height="50" class="editable" style="background-color:rgb(255, 255, 228)"></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)">SUBJECT 6</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">SUBJECT 7</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 255, 255)">SUBJECT 8</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">SUBJECT 9</td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)"><b>Tuesday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)">LIBRARY</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(160, 81, 255)">ECO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)"><b>Wednesday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 255, 255)">IT/AI/IFM</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)"><b>Thursday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(160, 81, 255)">ECO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)">MUSIC/<br>DANCE</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)"><b>Friday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">C.T.</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 255, 255)">IT/AI/IFM</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)">SPORTS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+            </tr>
+            <tr>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 255, 255)"><b>Saturday</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(120, 225, 225)">C.T.</td>
+                <td colspan="2" align="center" height="50" class="editable" style="background-color:rgb(240 , 110, 255)"><b>PAT</b></td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 40, 0)">HINDI</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(0, 200, 0)">MATHS</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 240, 0)">HIST/<br>CIV/<br>GEO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(255, 160, 0)">ENGLISH</td>
+                <td align="center" height="50" class="editable" style="background-color:rgb(28, 144, 255)">PHY/<br>CHEM/<br>BIO</td>
+            </tr>
+        </table>
+        <p id="lastEditedDisplay_xi" style="text-align: center;"></p>
+        <div id="colorLegend_xi" class="colorLegend" style="text-align: center; margin-top: 20px; padding: 10px; border: 2px solid black; width: 50%; margin-left: auto; margin-right: auto;">
+            <h3>Subject Color Legend</h3>
+            <button id="legendEditToggle_xi" class="legendEditToggle" onclick="toggleLegendEdit('xi')" style="margin-bottom: 10px; padding: 5px 10px; font-size: 14px;">Edit Legend (Disable)</button>
+            <button id="addLegendBtn_xi" onclick="addLegendItem('xi')" style="margin-bottom: 10px; margin-left: 10px; padding: 5px 10px; font-size: 14px;">Add Subject</button>
+            <div id="legendItems_xi" style="display: flex; justify-content: space-around; flex-wrap: wrap;"></div>
+        </div>
+    </div>
+
+<script>
+function showTab(prefix) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelector('.tab-btn[onclick*="' + prefix + '"]').classList.add('active');
+    document.getElementById('tab_' + prefix).classList.add('active');
+}
+
+let pickedColor = { x: null, xi: null };
+let editable = { x: false, xi: false };
+let legendEditable = { x: false, xi: false };
+
+// Utility to get correct keys for each timetable
+function getKeys(prefix) {
+    return {
+        cells: `timetable_${prefix}_cells`,
+        legend: `legend_${prefix}`,
+        lastEdited: `lastEdited_${prefix}`,
+        legendItems: `legendItems_${prefix}`,
+        editToggle: `editToggle_${prefix}`,
+        legendEditToggle: `legendEditToggle_${prefix}`,
+        lastEditedDisplay: `lastEditedDisplay_${prefix}`,
+        colorLegend: `colorLegend_${prefix}`
+    };
+}
+
+// Toggle edit mode for a timetable
+function toggleEdit(prefix) {
+    editable[prefix] = !editable[prefix];
+    document.querySelectorAll(`#table_${prefix} .editable`).forEach(cell => {
+        cell.contentEditable = editable[prefix];
+        if (editable[prefix]) {
+            cell.addEventListener("input", e => saveCellAndTime(prefix));
+        } else {
+            cell.removeEventListener("input", e => saveCellAndTime(prefix));
+        }
+    });
+    document.getElementById(getKeys(prefix).editToggle).innerText = editable[prefix] ? "Edit Mode (Enable)" : "Edit Mode (Disable)";
+    enableCellColorPicking(prefix);
+}
+
+// Save cell content and last edited time to localStorage
+function saveCellAndTime(prefix) {
+    saveCells(prefix);
+    updateLastEdited(prefix);
+}
+
+// Save all editable cells to localStorage
+function saveCells(prefix) {
+    const cells = document.querySelectorAll(`#table_${prefix} .editable`);
+    const data = [];
+    cells.forEach(cell => data.push({
+        html: cell.innerHTML,
+        bg: cell.style.backgroundColor
+    }));
+    localStorage.setItem(getKeys(prefix).cells, JSON.stringify(data));
+}
+
+// Restore all editable cells from localStorage
+function restoreCells(prefix) {
+    const data = JSON.parse(localStorage.getItem(getKeys(prefix).cells) || "[]");
+    const cells = document.querySelectorAll(`#table_${prefix} .editable`);
+    data.forEach((val, idx) => {
+        if (cells[idx] && val && val.html && val.html.trim() !== "") {
+            cells[idx].innerHTML = val.html;
+            if (val.bg) cells[idx].style.backgroundColor = val.bg;
+        } else if (cells[idx] && val && val.bg) {
+            cells[idx].style.backgroundColor = val.bg;
+        }
+    });
+}
+
+// Save last edited time to localStorage and update display
+function updateLastEdited(prefix) {
+    const now = new Date();
+    const formattedDate = now.toLocaleString('en-US', {
+        year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+    });
+    localStorage.setItem(getKeys(prefix).lastEdited, formattedDate);
+    document.getElementById(getKeys(prefix).lastEditedDisplay).innerText = `Last Edited: ${formattedDate}`;
+}
+
+// Restore last edited time from localStorage
+function restoreLastEdited(prefix) {
+    const last = localStorage.getItem(getKeys(prefix).lastEdited);
+    if (last) {
+        document.getElementById(getKeys(prefix).lastEditedDisplay).innerText = `Last Edited: ${last}`;
+    }
+}
+
+// Legend edit mode toggle
+function toggleLegendEdit(prefix) {
+    legendEditable[prefix] = !legendEditable[prefix];
+    document.getElementById(getKeys(prefix).legendEditToggle).innerText = legendEditable[prefix] ? "Edit Legend (Enable)" : "Edit Legend (Disable)";
+    document.querySelectorAll(`#legendItems_${prefix} span`).forEach(span => {
+        span.contentEditable = legendEditable[prefix];
+        span.style.background = legendEditable[prefix] ? "#fffbe6" : "transparent";
+        span.style.borderRadius = legendEditable[prefix] ? "5px" : "0";
+        span.style.padding = legendEditable[prefix] ? "2px 4px" : "0";
+        if (legendEditable[prefix]) {
+            span.addEventListener("input", () => saveLegend(prefix));
+        } else {
+            span.removeEventListener("input", () => saveLegend(prefix));
+        }
+    });
+    document.querySelectorAll(`#legendItems_${prefix} button.legend-del-btn`).forEach(btn => {
+        btn.style.display = legendEditable[prefix] ? "inline-block" : "none";
+    });
+}
+
+// Save legend texts to localStorage
+function saveLegend(prefix) {
+    const legendDivs = document.querySelectorAll(`#legendItems_${prefix} > div`);
+    const legendData = [];
+    legendDivs.forEach(div => {
+        const span = div.querySelector("span");
+        const colorBox = div.querySelector("div");
+        if (span && colorBox) {
+            const text = span.textContent;
+            const subject = text.split(":")[0].trim();
+            const color = colorBox.style.backgroundColor;
+            legendData.push([subject, color]);
+        }
+    });
+    localStorage.setItem(getKeys(prefix).legend, JSON.stringify(legendData));
+}
+
+// Restore legend texts from localStorage
+function restoreLegend(prefix) {
+    let legendData = JSON.parse(localStorage.getItem(getKeys(prefix).legend) || "[]");
+    const legendItems = document.getElementById(getKeys(prefix).legendItems);
+    legendItems.innerHTML = "";
+    if (legendData.length === 0) {
+        legendData = [
+            ["Maths", "rgb(0, 200, 0)"],
+            ["English", "rgb(255, 160, 0)"],
+            ["Physics/Chemistry/Biology", "rgb(28, 144, 255)"],
+            ["Hindi", "rgb(255, 40, 0)"],
+            ["IT/AI/IFM", "rgb(0, 255, 255)"],
+            ["Art/Craft", "rgb(240, 110, 255)"],
+            ["Upper Row's Cells", "rgb(255, 255, 228)"]
+        ];
+        localStorage.setItem(getKeys(prefix).legend, JSON.stringify(legendData));
+    }
+    legendData.forEach(item => addLegendItem(prefix, item[0], item[1]));
+}
+
+// Add a new subject to the legend
+function addLegendItem(prefix, subject, color) {
+    if (!subject) {
+        subject = prompt("Enter subject name:");
+        if (!subject) return;
+        color = prompt("Enter color (CSS color or rgb value):", "rgb(0,0,0)");
+        if (!color) color = "rgb(0,0,0)";
+    }
+    const div = document.createElement("div");
+    div.style.display = "flex";
+    div.style.alignItems = "center";
+    div.style.margin = "5px";
+
+    const colorBox = document.createElement("div");
+    colorBox.style.width = "20px";
+    colorBox.style.height = "20px";
+    colorBox.style.backgroundColor = color;
+    colorBox.style.marginRight = "10px";
+    colorBox.style.border = "1px solid black";
+    colorBox.onclick = function(e) {
+        pickedColor[prefix] = colorBox.style.backgroundColor;
+        document.querySelectorAll(`#legendItems_${prefix} div`).forEach(div => {
+            div.style.outline = "";
+        });
+        div.style.outline = "3px solid #2d6cdf";
+    };
+
+    const span = document.createElement("span");
+    span.textContent = `${subject}: ${color}`;
+    span.contentEditable = legendEditable[prefix];
+    if (legendEditable[prefix]) {
+        span.style.background = "#fffbe6";
+        span.style.borderRadius = "5px";
+        span.style.padding = "2px 4px";
+        span.addEventListener("input", () => saveLegend(prefix));
+    }
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "❌";
+    delBtn.className = "legend-del-btn";
+    delBtn.style.display = legendEditable[prefix] ? "inline-block" : "none";
+    delBtn.onclick = function() {
+        if (confirm("Are you sure you want to delete this subject?")) {
+            div.remove();
+            saveLegend(prefix);
+        }
+    };
+
+    div.appendChild(colorBox);
+    div.appendChild(span);
+    div.appendChild(delBtn);
+
+    document.getElementById(getKeys(prefix).legendItems).appendChild(div);
+    saveLegend(prefix);
+}
+
+// Enable color picking from legend and apply to cells in edit mode
+function enableCellColorPicking(prefix) {
+    document.querySelectorAll(`#table_${prefix} .editable`).forEach(cell => {
+        cell.onclick = null;
+        cell.addEventListener("click", function cellColorHandler(e) {
+            if (editable[prefix] && pickedColor[prefix]) {
+                cell.style.backgroundColor = pickedColor[prefix];
+                saveCells(prefix);
+                document.querySelectorAll(`#legendItems_${prefix} div`).forEach(div => {
+                    div.style.outline = "";
+                });
+                pickedColor[prefix] = null;
+            }
+        });
+    });
+}
+
+// On page load, restore everything for both tables
+window.addEventListener("DOMContentLoaded", () => {
+    ["x", "xi"].forEach(prefix => {
+        restoreCells(prefix);
+        restoreLastEdited(prefix);
+        restoreLegend(prefix);
+        document.querySelectorAll(`#table_${prefix} .editable`).forEach(cell => {
+            cell.addEventListener("input", () => saveCellAndTime(prefix));
+        });
+        enableCellColorPicking(prefix);
+    });
+});
+</script>
+</body>
+</html>
