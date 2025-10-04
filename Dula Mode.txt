@@ -1,0 +1,183 @@
+//Connect D7 to GND with a switch
+#include <NewPing.h>
+#include <Servo.h>
+#include <AFMotor.h>
+
+// ---------------- Mode Pin ----------------
+#define MODE_PIN 7   // D7 switch for HF/OA mode
+
+// ---------------- Human Following Pins ----------------
+#define RIGHT A2
+#define LEFT  A3
+#define TRIGGER A1
+#define ECHO    A0
+
+#define FWD_SPEED_MIN 100
+#define FWD_SPEED_MAX 220
+#define BACKWARD_SPEED 120
+#define TURN_SPEED_HF 200
+
+// ---------------- Obstacle Avoidance Pins ----------------
+#define SERVO_PIN 10
+#define MAX_DISTANCE 200
+#define FWD_SPEED_OA 150
+#define TURN_SPEED_OA 150
+#define OBSTACLE_DIST 20
+#define SERVO_LEFT 160   // Adjusted for your servo
+#define SERVO_RIGHT 20   // Adjusted for your servo
+#define SERVO_CENTER 85
+#define PAUSE_TIME 500   // Slightly longer pause
+
+// ---------------- Globals ----------------
+NewPing sonar(TRIGGER, ECHO, MAX_DISTANCE); // single sonar for both HF and OA
+Servo myservo;
+
+// Motors (shared)
+AF_DCMotor Motor1(1, MOTOR12_1KHZ);
+AF_DCMotor Motor2(2, MOTOR12_1KHZ);
+AF_DCMotor Motor3(3, MOTOR34_1KHZ);
+AF_DCMotor Motor4(4, MOTOR34_1KHZ);
+
+// HF variables
+unsigned int distanceHF = 0;
+unsigned int Right_Value = 0;
+unsigned int Left_Value  = 0;
+
+void setup() {
+  Serial.begin(9600);
+
+  // Mode pin
+  pinMode(MODE_PIN, INPUT_PULLUP); // HIGH = switch on, LOW = switch off
+
+  // HF pins
+  pinMode(RIGHT, INPUT);
+  pinMode(LEFT, INPUT);
+
+  // OA servo
+  myservo.attach(SERVO_PIN);
+  myservo.write(SERVO_CENTER);
+}
+
+void loop() {
+  int mode = digitalRead(MODE_PIN);
+
+  if(mode == HIGH) {
+    // Switch on → OA mode
+    obstacleAvoidance();
+  } else {
+    // Switch off → HF mode
+    humanFollowing();
+  }
+}
+
+// ---------------- Human Following Code (unchanged) ----------------
+void humanFollowing() {
+  delay(50);                         
+  distanceHF = sonar.ping_cm();
+  if(distanceHF == 0) distanceHF = MAX_DISTANCE; // Fix: treat 0 as max
+
+  Right_Value = digitalRead(RIGHT);
+  Left_Value  = digitalRead(LEFT);
+
+  if ((Right_Value == 0) && (Left_Value == 1)) {
+    turnLeft(TURN_SPEED_HF);
+  }
+  else if ((Right_Value == 1) && (Left_Value == 0)) {
+    turnRight(TURN_SPEED_HF);
+  }
+  else {
+    if ((distanceHF > 0) && (distanceHF < 10)) {
+      moveBackward(BACKWARD_SPEED);
+    }
+    else if ((distanceHF >= 10) && (distanceHF < 50)) {
+      int speed = map(distanceHF, 10, 50, FWD_SPEED_MIN, FWD_SPEED_MAX);
+      moveForward(speed);
+    }
+    else {
+      stopMotors();
+    }
+  }
+}
+
+// ---------------- Obstacle Avoidance Code (improved) ----------------
+void obstacleAvoidance() {
+  int frontDist = sonar.ping_cm();
+  if(frontDist == 0 || frontDist < 2) frontDist = MAX_DISTANCE; // min threshold
+
+  if(frontDist > OBSTACLE_DIST) {
+    moveForward(FWD_SPEED_OA);
+  } else {
+    stopMotors();
+    delay(100);
+
+    // Smooth scan to left
+    for(int pos = SERVO_CENTER; pos <= SERVO_LEFT; pos += 5){
+      myservo.write(pos);
+      delay(20);
+    }
+    delay(PAUSE_TIME);
+    int leftDist = sonar.ping_cm();
+    if(leftDist == 0) leftDist = MAX_DISTANCE;
+
+    // Smooth scan to right
+    for(int pos = SERVO_CENTER; pos >= SERVO_RIGHT; pos -= 5){
+      myservo.write(pos);
+      delay(20);
+    }
+    delay(PAUSE_TIME);
+    int rightDist = sonar.ping_cm();
+    if(rightDist == 0) rightDist = MAX_DISTANCE;
+
+    // Quickly return to center
+    myservo.write(SERVO_CENTER);
+    delay(100);
+
+    // Decide turn direction
+    if(leftDist > rightDist) {
+      turnLeft(TURN_SPEED_OA);
+      delay(800);
+    } else {
+      turnRight(TURN_SPEED_OA);
+      delay(800);
+    }
+    stopMotors();
+  }
+
+  delay(20); // small loop delay
+}
+
+// ---------------- Motor Helpers (shared) ----------------
+void moveForward(int speed) {
+  Motor1.setSpeed(speed); Motor1.run(FORWARD);
+  Motor2.setSpeed(speed); Motor2.run(FORWARD);
+  Motor3.setSpeed(speed); Motor3.run(FORWARD);
+  Motor4.setSpeed(speed); Motor4.run(FORWARD);
+}
+
+void moveBackward(int speed){
+  Motor1.setSpeed(speed); Motor1.run(BACKWARD);
+  Motor2.setSpeed(speed); Motor2.run(BACKWARD);
+  Motor3.setSpeed(speed); Motor3.run(BACKWARD);
+  Motor4.setSpeed(speed); Motor4.run(BACKWARD);
+}
+
+void turnLeft(int speed){
+  Motor1.setSpeed(speed); Motor1.run(FORWARD);
+  Motor2.setSpeed(speed); Motor2.run(FORWARD);
+  Motor3.setSpeed(speed); Motor3.run(BACKWARD);
+  Motor4.setSpeed(speed); Motor4.run(BACKWARD);
+}
+
+void turnRight(int speed){
+  Motor1.setSpeed(speed); Motor1.run(BACKWARD);
+  Motor2.setSpeed(speed); Motor2.run(BACKWARD);
+  Motor3.setSpeed(speed); Motor3.run(FORWARD);
+  Motor4.setSpeed(speed); Motor4.run(FORWARD);
+}
+
+void stopMotors(){
+  Motor1.run(RELEASE);
+  Motor2.run(RELEASE);
+  Motor3.run(RELEASE);
+  Motor4.run(RELEASE);
+}
